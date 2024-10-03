@@ -114,8 +114,7 @@ app.delete("/users/:id", (req, res) => {
      if (result === undefined) {
         res.status(404).send("Resource not found.");
       } else {
-       const idx = users["users_list"].findIndex((user) => user["id"] === id);
-       users["users_list"].splice(idx, 1);
+       users["users_list"] = Array.from(new Set(users["users_list"].filter((user) => user["id"] !== id)));
        res.send();
       }
 });
