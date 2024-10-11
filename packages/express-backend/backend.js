@@ -106,8 +106,10 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/users", (req, res) => {
   const userToAdd = req.body;
+  const number = Math.floor(100 + (Math.random() * ((999 - 100) + 1)))
+  userToAdd.id = "" + number;
   addUser(userToAdd);
-  res.send();
+  res.status(201).send(userToAdd);
 });
 
 app.delete("/users/:id", (req, res) => {
@@ -117,6 +119,6 @@ app.delete("/users/:id", (req, res) => {
         res.status(404).send("Resource not found.");
       } else {
        users["users_list"] = Array.from(new Set(users["users_list"].filter((user) => user["id"] !== id)));
-       res.send();
+       res.status(204).send();
       }
 });

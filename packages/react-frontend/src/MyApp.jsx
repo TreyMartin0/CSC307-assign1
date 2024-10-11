@@ -3,16 +3,36 @@ import Table from "./Table";
 import Form from "./Form";
 
 function MyApp() {
- const [characters, setCharacters] =useState([]);
+  const [characters, setCharacters] = useState([]);
   function removeOneCharacter(index) {
-    const updated = characters.filter((character, i) => {
-      return i !== index;
-    });
-    setCharacters(updated);
+    const character = characters[index];
+    const characterId = character.id;
+    deleteUser(characterId)
+      .then((res) => {
+        if (res.status === 204) {
+          const updated = characters.filter((character, i) => i !== index);
+          setCharacters(updated);
+        } else {
+          throw new Error(`Unexpected status code: ${res.status}`);
+        }
+      })
+      .catch((error) => {
+        console.error("Error deleting user:", error);
+      });
   }
+
 function updateList(person) {
     postUser(person)
-      .then(() => setCharacters([...characters, person]))
+      .then((res) => {
+              if (res.status === 201) {
+                  return res.json();
+              } else {
+                  throw new Error(`Unexpected status code: ${res.status}`);
+              }
+            })
+            .then((data) => {
+                setCharacters([...characters, data]);
+            })
       .catch((error) => {
         console.log(error);
       })
@@ -24,7 +44,7 @@ function fetchUsers() {
   }
 
 function postUser(person) {
-    const promise = fetch("Http://localhost:8000/users", {
+    const promise = fetch("http://localhost:8000/users", {
       method: "POST",
       headers: {
       "Content-Type": "application/json",
@@ -32,6 +52,14 @@ function postUser(person) {
       body: JSON.stringify(person),
     });
 
+    return promise;
+}
+
+function deleteUser(id) {
+  console.log(`Sending DELETE request for user with id: ${id}`);
+    const promise = fetch(`http://localhost:8000/users/${id}`, {
+      method: "DELETE"
+    });
     return promise;
 }
 
