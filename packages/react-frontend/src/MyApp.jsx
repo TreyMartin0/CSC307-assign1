@@ -6,7 +6,7 @@ function MyApp() {
   const [characters, setCharacters] = useState([]);
   function removeOneCharacter(index) {
     const character = characters[index];
-    const characterId = character.id;
+    const characterId = character._id;
     deleteUser(characterId)
       .then((res) => {
         if (res.status === 204) {
@@ -55,9 +55,9 @@ function postUser(person) {
     return promise;
 }
 
-function deleteUser(id) {
-  console.log(`Sending DELETE request for user with id: ${id}`);
-    const promise = fetch(`http://localhost:8000/users/${id}`, {
+function deleteUser(_id) {
+  console.log(`Sending DELETE request for user with id: ${_id}`);
+    const promise = fetch(`http://localhost:8000/users/${_id}`, {
       method: "DELETE"
     });
     return promise;
